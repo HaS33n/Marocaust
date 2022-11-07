@@ -5,7 +5,6 @@ class Messenger :
 {
 public:
     Messenger(std::string title);
-    virtual void display() override;
 private:
 
 };

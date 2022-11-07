@@ -1,10 +1,11 @@
 #include "ResourceManager.h"
-void ResourceManager::addTexture(std::string name) {
+bool ResourceManager::addTexture(std::string name) {
 	sf::Texture* tp = new sf::Texture;
 	if (!tp->loadFromFile(name + ".jpg"))
-		exit(1);
+		return false;
 	textures[name] = tp;
 	delete tp;
+	return true;
 }
 sf::Texture* ResourceManager::getTexture(std::string name) {
 

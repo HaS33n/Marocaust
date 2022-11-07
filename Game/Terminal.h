@@ -5,8 +5,6 @@ class Terminal :
 {
 public:
     Terminal(std::string title);
-    virtual void display() override;
-    void makeWindowBar();
 private:
 
 };

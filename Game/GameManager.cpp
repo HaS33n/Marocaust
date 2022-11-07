@@ -14,7 +14,7 @@ GameManager::GameManager(sf::RenderWindow& window) : m_window(window) {
 	*/
 
 	m_window.setFramerateLimit(144);
-	
+	LMBP = false;
 	//test
 }
 
@@ -33,9 +33,12 @@ void GameManager::runGame() {
 				break;
 
 			case sf::Event::MouseButtonPressed:
-				handleMouse(sf::Mouse::getPosition(m_window));
+				if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+					handleMouse(sf::Mouse::getPosition(m_window));
 				break;
-
+			case sf::Event::MouseButtonReleased:
+				LMBP = false;
+				break;
 			case sf::Event::KeyPressed:
 				handleKeyboard(event.key.code);
 				break;
@@ -43,6 +46,12 @@ void GameManager::runGame() {
 				break;
 			}
 
+		}
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+			if (LMBP) 
+				AM.moveApp(m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window)));
+
+				
 		}
 		updateWindow();
 	}
@@ -52,8 +61,11 @@ void GameManager::handleMouse(sf::Vector2i mousepos) {
 	std::cout << mousepos.x << " " << mousepos.y << std::endl;
 	//je¿eli nie kliknê³o w cokolwiek za co odpowiada GM to musia³o to byæ okno aplikacji wiec ono AM sie tym zajmie
 	//todo
-	AM.handleMouse(event, m_window.mapPixelToCoords(mousepos));
-
+	LMBP=AM.handleMouse(m_window.mapPixelToCoords(mousepos));
+	if (LMBP && AM.slctd != nullptr) {
+		AM.slctd->getSprite().setOrigin(AM.slctd->getSpriteTexture().mapPixelToCoords(mousepos));
+	}
+		
 }
 
 void GameManager::handleKeyboard(sf::Keyboard::Key key) {
@@ -68,10 +80,10 @@ void GameManager::handleKeyboard(sf::Keyboard::Key key) {
 }
 
 void GameManager::updateWindow() {
-	m_window.clear();
+	m_window.clear(sf::Color::White);
 
 	for (auto& it : AM.apps) {
-		m_window.draw(it.second->getWindow());
+		it.second->display(m_window);
 	}
 
 	m_window.display();

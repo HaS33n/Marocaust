@@ -27,14 +27,19 @@ void AppManager::killApp(std::string name) {
 	
 }
 
-void AppManager::handleMouse(sf::Event evnt, sf::Vector2f mousepos) {
+void AppManager::moveApp(sf::Vector2f mousepos) {
+	slctd->moveWindow(mousepos);
+}
 
+bool AppManager::handleMouse(sf::Vector2f mousepos) {
+	//wybieranie okna
 	for (auto& it : apps) {
-		sf::FloatRect bounds = it.second->getWindow().getGlobalBounds();
+		sf::FloatRect bounds = it.second->getSprite().getGlobalBounds();
 		if (bounds.contains(mousepos)) {
 			slctd = it.second;
+			std::cout << "selected: " << it.first << std::endl;
+			return true;
 		}
 	}
-
-	
+	return false;
 }

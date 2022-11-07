@@ -4,7 +4,7 @@
 class ResourceManager
 {
 public:
-	void addTexture(std::string name);
+	bool addTexture(std::string name);
 	sf::Texture* getTexture(std::string name);
 private:
 	std::unordered_map<std::string, sf::Texture*> textures;

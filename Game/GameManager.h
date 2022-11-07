@@ -22,5 +22,7 @@ private:
 	sf::RenderWindow& m_window;
 	sf::Event event;
 
+	bool LMBP;
+
 };
 
