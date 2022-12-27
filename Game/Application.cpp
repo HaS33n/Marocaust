@@ -2,6 +2,7 @@
 
 Application::Application(std::string title) : name(title)
 {
+	isBeingDreagged = false;
 
 	baseTX.create(500, 330);
 	baseTX.clear();
@@ -13,31 +14,44 @@ Application::Application(std::string title) : name(title)
 	baseTX.draw(mainWindow);
 	baseTX.draw(bar);
 	baseTX.display();
-	sprt.setTexture(baseTX.getTexture());
+	window.setTexture(baseTX.getTexture());
 }
 
 void Application::display(sf::RenderWindow& tW) {
-	tW.draw(sprt);
+	tW.draw(window);
 }
 
 sf::Sprite& Application::getSprite() {
-	return sprt;
-}
-
-void Application::moveWindow(sf::Vector2f position) {
-	sprt.setPosition(position);
-}
-
-void Application::moveWindow(float x, float y) {
-	sprt.setPosition(x, y);
+	return window;
 }
 
 sf::RenderTexture& Application::getSpriteTexture() {
 	return baseTX;
 }
 
+void Application::dragWindow(const sf::Event& event) {
+    if (event.type == sf::Event::MouseButtonPressed && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+    {
+        // Check if the mouse is over the sprite
+        if (window.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y))
+        {
+            isBeingDreagged = true;
+            dragOffset = sf::Vector2f(event.mouseButton.x, event.mouseButton.y) - window.getPosition();
+        }
+    }
+    else if (event.type == sf::Event::MouseButtonReleased)
+    {
+       isBeingDreagged = false;
+    }
+    else if (event.type == sf::Event::MouseMoved && isBeingDreagged)
+    {
+        // Update the sprite's position while it is being dragged
+        window.setPosition(sf::Vector2f(event.mouseMove.x, event.mouseMove.y) - dragOffset);
+    }
+ }
+
 void Application::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	target.draw(sprt);
+	target.draw(window);
 }
 
 

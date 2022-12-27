@@ -1,13 +1,55 @@
 #include "ResourceManager.h"
-bool ResourceManager::addTexture(std::string name) {
-	sf::Texture* tp = new sf::Texture;
-	if (!tp->loadFromFile(name + ".jpg"))
-		return false;
-	textures[name] = tp;
-	delete tp;
-	return true;
-}
-sf::Texture* ResourceManager::getTexture(std::string name) {
 
-	return textures[name];
+ResourceManager::ResourceManager() {
+
+}
+
+sf::Texture& ResourceManager::loadTexture(const std::string& filename) {
+
+    // is loaded?
+    auto it = m_textures.find(filename);
+    if (it != m_textures.end())
+        return it->second;
+
+    // load and store
+    sf::Texture texture;
+    if (texture.loadFromFile(filename + ".png")) {
+        std::cout << "loaded texture: " << filename << std::endl;
+        return m_textures.emplace(filename, std::move(texture)).first->second;
+    }
+        
+    else
+        throw std::runtime_error("Failed to load texture: " + filename);
+
+}
+
+sf::Font& ResourceManager::loadFont(const std::string& filename) {
+    // is loaded?
+    auto it = m_fonts.find(filename);
+    if (it != m_fonts.end())
+        return it->second;
+
+    // load and store
+    sf::Font font;
+    if (font.loadFromFile(filename + ".ttf"))
+        return m_fonts.emplace(filename, std::move(font)).first->second;
+    else
+        throw std::runtime_error("Failed to load font: " + filename);
+
+}
+
+sf::SoundBuffer& ResourceManager::loadSoundBuffer(const std::string& filename) {
+
+    // is loaded?
+    auto it = m_soundBuffers.find(filename);
+    if (it != m_soundBuffers.end())
+        return it->second;
+
+    // load and store
+    sf::SoundBuffer soundBuffer;
+    if (soundBuffer.loadFromFile(filename + ".wav"))
+        return m_soundBuffers.emplace(filename, std::move(soundBuffer)).first->second;
+    else
+        throw std::runtime_error("Failed to load sound buffer: " + filename);
+
 }

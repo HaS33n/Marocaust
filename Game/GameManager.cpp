@@ -1,21 +1,18 @@
 #include "GameManager.h"
 GameManager::GameManager(sf::RenderWindow& window) : m_window(window) {
-	//wczytanie konfiguracji
 
-	/*
-	std::fstream cfg;
-	cfg.open("config.cfg",std::ios::in);
-	if (!cfg.good())
-		exit(2);
+	m_window.setFramerateLimit(300);
 
+	float sx, sy;
+	sx = float(sf::VideoMode::getDesktopMode().width) / float(3840);
+	sy = float(sf::VideoMode::getDesktopMode().height) / float(2160);
+	bg.setScale(sx, sy); 
+	bg.setTexture(RM.loadTexture("background"));
 
-	cfg.close();
-
-	*/
-
-	m_window.setFramerateLimit(144);
-	LMBP = false;
-	//test
+	std::shared_ptr<Icon> ic = std::make_shared<Icon>("Terminal", RM.loadTexture("Terminal"), sf::Vector2f(0, 0),AM);
+	icons["Terminal"] = ic;
+	ic = std::make_shared<Icon>("Messenger", RM.loadTexture("Messenger"), sf::Vector2f(20, 20),AM);
+	icons["Messenger"] = ic;
 }
 
 sf::RenderWindow& GameManager::GetWindow() {
@@ -36,35 +33,25 @@ void GameManager::runGame() {
 				if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
 					handleMouse(sf::Mouse::getPosition(m_window));
 				break;
-			case sf::Event::MouseButtonReleased:
-				LMBP = false;
-				break;
 			case sf::Event::KeyPressed:
 				handleKeyboard(event.key.code);
 				break;
 			default:
 				break;
 			}
+			dragApps();
+			dragIcons();
 
 		}
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			if (LMBP) 
-				AM.moveApp(m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window)));
-
-				
-		}
+		
 		updateWindow();
 	}
 }
 
 void GameManager::handleMouse(sf::Vector2i mousepos) {
 	std::cout << mousepos.x << " " << mousepos.y << std::endl;
-	//je¿eli nie kliknê³o w cokolwiek za co odpowiada GM to musia³o to byæ okno aplikacji wiec ono AM sie tym zajmie
-	//todo
-	LMBP=AM.handleMouse(m_window.mapPixelToCoords(mousepos));
-	if (LMBP && AM.slctd != nullptr) {
-		AM.slctd->getSprite().setOrigin(AM.slctd->getSpriteTexture().mapPixelToCoords(mousepos));
-	}
+
+	AM.handleMouse(m_window.mapPixelToCoords(mousepos));
 		
 }
 
@@ -81,10 +68,27 @@ void GameManager::handleKeyboard(sf::Keyboard::Key key) {
 
 void GameManager::updateWindow() {
 	m_window.clear(sf::Color::White);
+	m_window.draw(bg);
+
+	for (auto& it : icons) {
+		it.second->display(m_window);
+	}
 
 	for (auto& it : AM.apps) {
 		it.second->display(m_window);
 	}
-
 	m_window.display();
+
+}
+
+void GameManager::dragApps() {
+	for (auto& it : AM.apps) {
+		it.second->dragWindow(event);
+	}
+}
+
+void GameManager::dragIcons() {
+	for (auto& it : icons) {
+		it.second->dragIcon(event);
+	}
 }

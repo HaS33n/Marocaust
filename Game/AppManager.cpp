@@ -22,24 +22,23 @@ void AppManager::killApp(std::string name) {
 	if (f != apps.end()) {
 		apps.erase(f);
 		std::cout << "App destroyed: "<< name << std::endl;
+		slctd = nullptr;
 	}
 		
 	
 }
 
-void AppManager::moveApp(sf::Vector2f mousepos) {
-	slctd->moveWindow(mousepos);
-}
-
-bool AppManager::handleMouse(sf::Vector2f mousepos) {
+void AppManager::handleMouse(sf::Vector2f mousepos) {
 	//wybieranie okna
 	for (auto& it : apps) {
 		sf::FloatRect bounds = it.second->getSprite().getGlobalBounds();
 		if (bounds.contains(mousepos)) {
 			slctd = it.second;
 			std::cout << "selected: " << it.first << std::endl;
-			return true;
+			
 		}
 	}
-	return false;
+
+
+
 }

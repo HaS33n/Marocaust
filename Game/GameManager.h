@@ -1,5 +1,7 @@
 #pragma once
 #include "AppManager.h"
+#include "ResourceManager.h"
+#include "Icon.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <fstream>
@@ -7,22 +9,23 @@
 class GameManager
 {
 public:
-	GameManager(sf::RenderWindow& window);
-	sf::RenderWindow& GetWindow();
-	void runGame();
+    GameManager(sf::RenderWindow& window);
+    sf::RenderWindow& GetWindow();
+    void runGame();
 
-	
 private:
-	AppManager AM;
-	void updateWindow();
-	void handleMouse(sf::Vector2i mousepos);
-	void handleKeyboard(sf::Keyboard::Key key);
+    AppManager AM;
+    ResourceManager RM;
 
-	//drzewo gry tu bedzie, prawdopodobnie w RM?
-	sf::RenderWindow& m_window;
-	sf::Event event;
+    void updateWindow();
+    void dragApps();
+    void dragIcons();
+    void handleMouse(sf::Vector2i mousepos);
+    void handleKeyboard(sf::Keyboard::Key key);
 
-	bool LMBP;
+    std::unordered_map<std::string, std::shared_ptr<Icon>> icons;
 
+    sf::RenderWindow& m_window;
+    sf::Event event;
+    sf::Sprite bg;
 };
-

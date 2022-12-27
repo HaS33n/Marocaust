@@ -17,16 +17,17 @@ public:
 	virtual ~Application(){}
 	virtual void display(sf::RenderWindow& tW);
 	virtual sf::Sprite& getSprite();
-	virtual void moveWindow(sf::Vector2f position);
-	virtual void moveWindow(float x, float y);
 	virtual sf::RenderTexture& getSpriteTexture();
+	virtual void dragWindow(const sf::Event& event);
 private:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	sf::RenderTexture tx;
 	sf::RenderTexture baseTX;
-	sf::Sprite sprt;
+	sf::Sprite window;
 	std::string name; //check it
 
+	bool isBeingDreagged;
+	sf::Vector2f dragOffset;
 };
 
